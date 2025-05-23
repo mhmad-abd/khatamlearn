@@ -2,15 +2,11 @@ const express = require('express')
 const cors = require('cors');
 const {auth} = require('./middleware/authentication')
 const tokenGenerator = require('./utils/tokenGenerator')
-
+const registerRoute=require('./route/register')
+const connectDB=require('./utils/connectDB') 
 // Initialization
 const app = express();
-
-
-
-// Load env variables
-// dotenv.config();
-
+connectDB();
 
 
 // Middlewares
@@ -20,18 +16,7 @@ app.use(express.json());
 
 // API Routes
 
-
-// !!!! testing jwt !!!!
-// app.post('/login',(req,res)=>{
-//     const username = req.body.username
-//     const user ={name:username}
-//     const token = tokenGenerator(user)
-//     res.json({token:token})
-// })
-
-// app.get('/api/profile', auth, (req, res) => {
-//   res.json({ message: `خوش آمدی ${req.user.name}` });
-// });
+app.use('/api',registerRoute)
 
 
 module.exports = app;

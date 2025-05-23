@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
         required: true,
         trim: true,
         unique: true,
-        match: /^(400|40[1-9]|4[1-9]\d|500)\d{5}(0[1-9]|[1-9][0-9])$/
+        match: /^(400|40[1-9]|4[1-9]\d|500)\d{6}(0[1-9]|[1-9][0-9])$/
     },
     name: {
         type: String,
@@ -19,16 +19,16 @@ const userSchema = new mongoose.Schema({
         required: true,
         minlength: 8
     },
-    tokens: [{
-        access: {
-            type: String,
-            required: true
-        },
-        token: {
-            type: String,
-            required: true
-        }
-    }],
+    // tokens: [{
+    //     access: {
+    //         type: String,
+    //         required: true
+    //     },
+    //     token: {
+    //         type: String,
+    //         required: true
+    //     }
+    // }],
     role:{
         type: String,
         enum: ['admin','teacher','user'],
@@ -36,5 +36,4 @@ const userSchema = new mongoose.Schema({
     }
 });
 
-const User = mongoose.model('User', userSchema);
-module.exports =  {User};
+module.exports = mongoose.model('User', userSchema);;
