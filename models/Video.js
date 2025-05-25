@@ -19,34 +19,28 @@ const videoSchema = new mongoose.Schema({
         trim: true,
         minlength: 1
     },
-    thumbnailUrl: {
-        type: String,
-        required: true,
-        trim: true,
-        minlength: 1
-    },
-    duration: {
-        type: Number,
-        required: true
-    },
     uploadedAt: {
         type: Date,
         default: Date.now
     },
     uploader:{
-        type:mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref:'User',
         required:true
     },
     genre:{
-        type:String,
+        type: String,
         required: true,
         enum: ['ComputerEng','ElectricalEng','MechanicalEng','CivilEng','Mathematics and Statistics']
     },
     likes:[{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
-    }]
+    }],
+    PDFUrl:{
+        type : String,
+        trim : true
+    }
 });
 
 

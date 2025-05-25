@@ -1,9 +1,9 @@
 const express = require('express')
 const cors = require('cors');
 const {auth} = require('./middleware/authentication')
-const tokenGenerator = require('./utils/tokenGenerator')
 const registerRoute=require('./route/register')
 const connectDB=require('./utils/connectDB') 
+const serachRoute= require('./route/serach')
 // Initialization
 const app = express();
 connectDB();
@@ -17,6 +17,6 @@ app.use(express.json());
 // API Routes
 
 app.use('/api',registerRoute)
-
+app.use('/api',serachRoute)
 
 module.exports = app;
