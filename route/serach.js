@@ -1,7 +1,7 @@
 const express = require('express')
-const serachController = require('../controller/serachController')
+const searchController  = require('../controller/searchController ')
 const router = express.Router()
 
-router.get('/serach',serachController)
+router.get('/serach',searchController )
 
 module.exports = router

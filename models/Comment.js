@@ -7,12 +7,12 @@ const commentSchema = mongoose.Schema({
         required: true,
         minlength: 1
     },
-    video:{
+    videoID:{
         type: mongoose.Schema.Types.ObjectId,
         ref:'Video',
         required: true
     },
-    user:{
+    userID:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
@@ -20,6 +20,10 @@ const commentSchema = mongoose.Schema({
     createdAt:{
         type: Date,
         default: Date.now
+    },
+    parnetID:{
+        type: mongoose.Schema.Types.ObjectId,
+        default: null
     }
 })
 
