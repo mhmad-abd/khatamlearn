@@ -12,7 +12,7 @@ const searchController = async (req,res)=>{
         {description:{ $regex: q , $options:'i'}} 
     ]})
         const users = await User.find({name:{ $regex: q , $options:'i'}})
-    ;
+        users=users.filter(u=> u.role=='teacher')
     res.json({videos,users})
     }catch(e){
         res.status(500).json({error:e.message})
