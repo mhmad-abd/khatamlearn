@@ -1,7 +1,7 @@
 require('dotenv').config()
 const AWS = require('aws-sdk');
 
-const s3 =new AWS.S3({
+const s3 = new AWS.S3({
     endpoint:'https://s3.ir-thr-at1.arvanstorage.ir',
     credentials:{
         accessKeyId:process.env.ARVAN_ACCESS_KEY,

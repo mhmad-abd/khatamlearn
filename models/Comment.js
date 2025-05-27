@@ -23,6 +23,7 @@ const commentSchema = mongoose.Schema({
     },
     parnetID:{
         type: mongoose.Schema.Types.ObjectId,
+        ref : 'Comment',
         default: null
     }
 })
