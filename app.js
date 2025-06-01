@@ -30,16 +30,20 @@ app.use('/api',loginRote)
 app.use('/api/video',commentRoute)
 
 
-app.post('/add/video',async(req,res)=>{
-    const {title, description,url,uploader,genre}=req.body
-    try{    
-        const newvideo = new Video({title,description,url,uploader,genre})
-        await newvideo.save();
-        res.status(201)
-    }catch(e){
-        res.status(500).json({error:e.message})
+
+//test
+const upload = require('./middleware/upload')
+app.post('/upload',upload.fields([{name:'video',maxCount:1},{name:'pdf',maxCount:1}]),(req,res)=>{
+     if (!req.files['video']) {
+      return res.status(400).json({ error:'you must upload a video'});
     }
+    res.json({
+      videoUrl: req.files['video'][0].location,
+      pdfUrl: req.files['pdf'] ? req.files['pdf'][0].location : null})
 })
+//end of test
+
+
 
 // Exportig app
 module.exports = app;
