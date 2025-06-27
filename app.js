@@ -10,6 +10,7 @@ const serachRoute= require('./route/serach')
 const registerRoute=require('./route/register')
 const loginRote=require('./route/login')
 const commentRoute=require('./route/commentRoute')
+const userRoute=require('./route/user')
 
 const Video = require('./models/Video')
 // Initialization
@@ -28,6 +29,7 @@ app.use('/api',registerRoute)
 app.use('/api',serachRoute)
 app.use('/api',loginRote)
 app.use('/api/video',commentRoute)
+app.use('/api',userRoute)
 
 
 

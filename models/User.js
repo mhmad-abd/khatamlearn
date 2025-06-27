@@ -19,16 +19,13 @@ const userSchema = new mongoose.Schema({
         required: true,
         minlength: 8
     },
-    // tokens: [{
-    //     access: {
-    //         type: String,
-    //         required: true
-    //     },
-    //     token: {
-    //         type: String,
-    //         required: true
-    //     }
-    // }],
+    email: {
+        type: String,
+        required: true,
+        trim: true,
+        unique: true,
+        match: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+    },
     role:{
         type: String,
         enum: ['admin','teacher','user'],
@@ -36,4 +33,4 @@ const userSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('User', userSchema);;
+module.exports = mongoose.model('User', userSchema);

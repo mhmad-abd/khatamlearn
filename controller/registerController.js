@@ -2,8 +2,8 @@ const User = require('./../models/User')
 const hash = require('./../utils/hash')
 const registerController =async (req,res)=>{
     try{
-        const {name , UserID , password }=req.body
-        if(!name || !UserID || !password){
+        const {name , UserID , password , email }=req.body
+        if(!name || !UserID || !password || !email){
             return res.status(400).json({message:'Fill all fields'})
         }
 
