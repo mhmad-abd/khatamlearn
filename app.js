@@ -7,7 +7,7 @@ const {auth} = require('./middleware/authentication')
 const connectDB=require('./utils/connectDB') 
 
 // Calling the route
-const serachRoute= require('./route/serachRoute')
+const serachRoute= require('./route/serachRouteRoute')
 const commentRoute=require('./route/commentRoute')
 const userRoute=require('./route/userRouteRoute')
 
