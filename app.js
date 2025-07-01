@@ -7,11 +7,10 @@ const {auth} = require('./middleware/authentication')
 const connectDB=require('./utils/connectDB') 
 
 // Calling the route
-const serachRoute= require('./route/serachRouteRoute')
+const serachRoute= require('./route/serachRoute')
 const commentRoute=require('./route/commentRoute')
-const userRoute=require('./route/userRouteRoute')
-
-const Video = require('./models/Video')
+const userRoute=require('./route/userRoute')
+const videoRoute=require('./route/videoRoute')
 // Initialization
 const app = express();
 connectDB();
@@ -21,6 +20,7 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser())
+app.use(express.urlencoded({ extended: true }));
 
 // API Routes
 
@@ -28,19 +28,20 @@ app.use(cookieParser())
 app.use('/api',serachRoute)
 app.use('/api/video',commentRoute)
 app.use('/api/user',userRoute)
+app.use('/api/video',videoRoute)
 
 
 
 //test
 const upload = require('./middleware/upload')
-app.post('/upload',upload.fields([{name:'video',maxCount:1},{name:'pdf',maxCount:1}]),(req,res)=>{
-     if (!req.files['video']) {
-      return res.status(400).json({ error:'you must upload a video'});
-    }
-    res.json({
-      videoUrl: req.files['video'][0].location,
-      pdfUrl: req.files['pdf'] ? req.files['pdf'][0].location : null})
-})
+// app.post('/upload',upload.fields([{name:'video',maxCount:1},{name:'pdf',maxCount:1}]),(req,res)=>{
+//      if (!req.files['video']) {
+//       return res.status(400).json({ error:'you must upload a video'});
+//     }
+//     res.json({
+//       videoUrl: req.files['video'][0].location,
+//       pdfUrl: req.files['pdf'] ? req.files['pdf'][0].location : null})
+// })
 //end of test
 
 

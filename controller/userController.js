@@ -85,7 +85,7 @@ const login = async (req,res)=>{
     if(!compare){
         return res.status(401).json({message:'The entered password is incorrect.'})
     }
-    const token = tokenGenerator({id:user._id,UserID:user.UserID})
+    const token = tokenGenerator({id:user._id,UserID:user.UserID,role:user.role})
     res.cookie('token',token,{
         httpOnly:true,
         maxAge:7*24*60*60*1000,
