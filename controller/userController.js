@@ -77,7 +77,7 @@ const deleteUser = async (req, res) => {
 const login = async (req,res)=>{
     const{UserID,password} = req.body
     try{
-           const user= await User.findOne({UserID})
+        const user= await User.findOne({UserID})
     if(!user){
         return res.status(401).json({message:'The entered UserID is incorrect.'})
     }

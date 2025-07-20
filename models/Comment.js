@@ -21,7 +21,7 @@ const commentSchema = mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    parnetID:{
+    parentID:{
         type: mongoose.Schema.Types.ObjectId,
         ref : 'Comment',
         default: null
