@@ -30,6 +30,16 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ['admin','teacher','user'],
         default: 'user'
+    },
+    savedVideo:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Video',       
+    }],
+    profilePic:{
+        type: String,
+        trim: true,
+        minlength: 1,
+        default: ''
     }
 });
 

@@ -8,9 +8,8 @@ const upload = require('../middleware/upload');
 
 
 
-
 router.get('/:videoid', auth,videoController.getVideo)
 router.post('/upload',auth,verifyRole,upload.fields([{ name: 'video', maxCount: 1 }, { name: 'pdf', maxCount: 1 }]), videoController.createVideo)
-
+router.post('/:videoid/like',auth,videoController.likedVideo)
 
 module.exports = router
