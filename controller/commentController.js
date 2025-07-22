@@ -53,7 +53,7 @@ const getReplies = async (req, res) => {
     const parentID = req.params.commentID
     try {
         if (!mongoose.Types.ObjectId.isValid(parentID)) {
-            return res.status(400).json({ message: 'invalid commentID' })
+            return res.status(400).json({ message: 'Invalid comment ID' })
         }
         const replies = await Comment.find({ parentID })
             .populate('userID', 'name')
