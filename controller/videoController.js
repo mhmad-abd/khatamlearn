@@ -26,17 +26,20 @@ const createVideo = async (req, res) => {
         if (!title || !description || !genre) {
             await deleteFile(req.files['video'][0].location)
             if (req.files['pdf']) await deleteFile(req.files['pdf'][0].location);
+            if (req.files['thumbnail']) await deleteFile(req.files['thumbnail'][0].location);
             return res.status(400).json({ error: 'Title, description, and genre are required' });
         }
 
         const videoUrl = req.files['video'][0].location;
         const PDFUrl = req.files['pdf'] ? req.files['pdf'][0].location : null;
-        const newVideo = new Video({ title, description, url: videoUrl, uploader: user.id, genre, PDFUrl });
+        const thumbnailURL = req.files['thumbnail'] ? req.files['thumbnail'][0].location : null
+        const newVideo = new Video({ title, description, url: videoUrl, uploader: user.id, genre, PDFUrl , thumbnailURL });
         await newVideo.save();
         res.status(201).json(newVideo);
     } catch (err) {
         if (req.files?.['video']) await deleteFile(req.files['video'][0].location);
         if (req.files?.['pdf']) await deleteFile(req.files['pdf'][0].location);
+        if (req.files?.['thumbnail']) await deleteFile(req.files['thumbnail'][0].location);
         res.status(500).json({ message: 'Internal server error', error: err.message });
     }
 };

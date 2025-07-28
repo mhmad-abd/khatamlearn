@@ -8,53 +8,42 @@ const storage = multerS3({
     acl: 'public-read',
     key: (req, file, cb) => {
         let folder = ''
-        if (file.mimetype.startsWith('video/')) {
-            folder = 'videos/'
-        } else if (file.mimetype === 'application/pdf') {
-            folder = 'pdfs/'
-        } else if (file.mimetype === 'image/jpeg') {
-            folder = 'image/profiles/'
+        switch (file.fieldname) {
+            case 'video':
+                folder = 'videos/'
+                break
+            case 'pdf':
+                folder = 'pdfs/'
+                break
+            case 'thumbnail':
+                folder = 'image/thumbnails'
+                break
+            case 'profile':
+                folder = 'image/profiles'
+                break
         }
         cb(null, folder + Date.now() + '-' + file.originalname)
     }
 })
 
-const uploadVid = multer({
-    storage,
-    fileFilter: (req, file, cb) => {
-        if (file.mimetype.startsWith('video/') || file.mimetype === 'application/pdf') {
-            cb(null, true)
-        }
-        else {
-            cb(new Error('file foramt is not valid'), false)
-        }
+const fileFilter = (req, file, cb) => {
+    const allowedTypes = [
+        'video/mp4',
+        'video/mkv',
+        'application/pdf',
+        'image/jpeg'
+    ]
+    if (allowedTypes.includes(file.mimetype)) {
+        cb(null, true)
     }
-})
-
-const uploadProfilePic = multer({
-    storage,
-    fileFilter: (req, file, cb) => {
-        if (file.mimetype === 'image/jpeg') {
-            cb(null, true)
-        } else {
-            cb(new Error('file format is not valid'), false)
-        }
+    else {
+        cb(new Error('file foramt is not valid'), false)
     }
-})
-
-const uploadPDF = multer({
-    storage,
-    fileFilter: (req, file, cb) => {
-        if (file.mimetype === 'application/pdf') {
-            cb(null, true)
-        } else {
-            cb(new Error('file format is not valid'), false)
-        }
-    }
-})
-
-module.exports = {
-    uploadVid,
-    uploadProfilePic,
-    uploadPDF
 }
+
+const upload = multer({
+    storage,
+    fileFilter
+})
+
+module.exports = upload

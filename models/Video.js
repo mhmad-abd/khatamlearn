@@ -40,6 +40,10 @@ const videoSchema = new mongoose.Schema({
     PDFUrl:{
         type : String,
         trim : true
+    },
+    thumbnailURL:{
+        type: String,
+        trim: true
     }
 });
 
