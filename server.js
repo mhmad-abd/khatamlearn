@@ -1,18 +1,18 @@
 // lirary
-const https = require('https')
+const http = require('http')
 const fs = require('fs')
 const app = require('./app')
 
-
+const port = process.env.PORT || 5000
 // Certificate keys
-const sslOptions = {
-    key:fs.readFileSync('./ssl/key.pem'),
-    cert:fs.readFileSync('./ssl/cert.pem')
-}
+// const sslOptions = {
+//     key:fs.readFileSync('./ssl/key.pem'),
+//     cert:fs.readFileSync('./ssl/cert.pem')
+// }
 
 // Running server
-const server = https.createServer(sslOptions,app)
+const server = http.createServer(app)
 
-server.listen(443,()=>{
-    console.log("HTTPS server is running on localhost");
+server.listen(port,()=>{
+    console.log(`HTTP server is running on localhost:${port}`);
 })

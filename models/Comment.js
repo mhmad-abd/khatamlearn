@@ -1,31 +1,31 @@
 const mongoose = require("mongoose")
 
 const commentSchema = mongoose.Schema({
-    content:{
+    content: {
         type: String,
         trim: true,
         required: true,
         minlength: 1
     },
-    videoID:{
+    videoID: {
         type: mongoose.Schema.Types.ObjectId,
-        ref:'Video',
+        ref: 'Video',
         required: true
     },
-    userID:{
+    userID: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
     },
-    createdAt:{
+    createdAt: {
         type: Date,
         default: Date.now
     },
-    parentID:{
+    parentID: {
         type: mongoose.Schema.Types.ObjectId,
-        ref : 'Comment',
+        ref: 'Comment',
         default: null
     }
 })
 
-module.exports = mongoose.model('Comment',commentSchema);
+module.exports = mongoose.model('Comment', commentSchema);

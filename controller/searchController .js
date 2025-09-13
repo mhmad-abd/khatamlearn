@@ -1,5 +1,6 @@
 const Video = require('../models/Video')
 const User = require('../models/User')
+const Course = require('../models/Course')
 
 const searchController = async (req, res) => {
     const { q } = req.query

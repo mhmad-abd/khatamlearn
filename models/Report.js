@@ -10,8 +10,8 @@ const reportSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
-    comment:{
-        type:mongoose.Schema.Types.ObjectId,
+    comment: {
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Comment'
     },
     reason: {
@@ -28,17 +28,17 @@ const reportSchema = new mongoose.Schema({
         enum: ['pending', 'reviewed'],
         default: 'pending'
     },
-    type:{
-        type:String,
-        enum:['video','comment']
+    type: {
+        type: String,
+        enum: ['video', 'comment']
     }
 })
 
-reportSchema.pre('validate', function(next) {
+reportSchema.pre('validate', function (next) {
     if (!this.video && !this.comment) {
         return next(new Error('report video or comment is required'));
     }
-    else if(this.comment && this.video){
+    else if (this.comment && this.video) {
         return next(new Error('report can only be for video or comment'));
     }
     next();

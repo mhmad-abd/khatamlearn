@@ -1,13 +1,17 @@
 const Video = require('../models/Video');
+const Season = require('../models/Season');
+const User = require('../models/User')
 const mongoose = require('mongoose')
 const { deleteFile } = require('../utils/s3')
+const safeTrim = require('../utils/safeTrim')
+
 const getVideo = async (req, res) => {
     const { videoid } = req.params;
     try {
         if (!mongoose.Types.ObjectId.isValid(videoid)) {
             return res.status(400).json({ error: 'Invalid video ID' });
         }
-        const video = await Video.findById(videoid)
+        const video = await Video.findById(videoid).populate('majorField', 'name').populate('uploader', 'name')
         if (!video) {
             return res.status(404).json({ error: 'Video not found' });
         }
@@ -18,28 +22,44 @@ const getVideo = async (req, res) => {
 };
 
 const createVideo = async (req, res) => {
+    const title = safeTrim(req.body.title);
+    const description = safeTrim(req.body.description);
+    const majorField = safeTrim(req.body.majorField);
+    const seasonId = req.params.seasonId
+    const userId = req.user.id
     try {
-        const { title, description, genre } = req.body;
-        const user = req.user
 
         if (!req.files['video']) return res.status(400).json({ error: 'you must upload a video' });
-        if (!title || !description || !genre) {
+        if (!title || !description || !majorField) {
             await deleteFile(req.files['video'][0].location)
             if (req.files['pdf']) await deleteFile(req.files['pdf'][0].location);
-            if (req.files['thumbnail']) await deleteFile(req.files['thumbnail'][0].location);
-            return res.status(400).json({ error: 'Title, description, and genre are required' });
+            return res.status(400).json({ error: 'Title, description, and major field are required' });
         }
-
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        const season = await Season.findById(seasonId).populate('courseId','publisher');
+        if (!season) {
+            return res.status(404).json({ error: 'Season not found' });
+        }
+        if (user._id.toString() !== season.courseId.publisher.toString()) {
+            return res.status(403).json({ error: 'You are not authorized to create a video for this season' });
+        }
         const videoUrl = req.files['video'][0].location;
         const PDFUrl = req.files['pdf'] ? req.files['pdf'][0].location : null;
-        const thumbnailURL = req.files['thumbnail'] ? req.files['thumbnail'][0].location : null
-        const newVideo = new Video({ title, description, url: videoUrl, uploader: user.id, genre, PDFUrl , thumbnailURL });
+        const newVideo = new Video({ title, description, url: videoUrl, majorField, PDFUrl, seasonId: season._id });
         await newVideo.save();
-        res.status(201).json(newVideo);
+        season.videos.push(newVideo._id);
+        await season.save();
+        res.status(201).json({ message: 'video uploaded successfully' });
     } catch (err) {
-        if (req.files?.['video']) await deleteFile(req.files['video'][0].location);
-        if (req.files?.['pdf']) await deleteFile(req.files['pdf'][0].location);
-        if (req.files?.['thumbnail']) await deleteFile(req.files['thumbnail'][0].location);
+        try {
+            if (req.files?.['video']) await deleteFile(req.files['video'][0].location);
+            if (req.files?.['pdf']) await deleteFile(req.files['pdf'][0].location);
+        } catch (cleanupErr) {
+            console.error("File cleanup error:", cleanupErr.message);
+        }
         res.status(500).json({ message: 'Internal server error', error: err.message });
     }
 };

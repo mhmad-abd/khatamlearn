@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Course = require('./Course');
 
 const userSchema = new mongoose.Schema({
     UserID: {
@@ -26,20 +27,40 @@ const userSchema = new mongoose.Schema({
         unique: true,
         match: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
     },
-    role:{
+    role: {
         type: String,
-        enum: ['admin','teacher','user'],
-        default: 'user'
+        enum: ['Admin', 'Teacher', 'User'],
+        default: 'User'
     },
-    savedVideo:[{
+    CourseId: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Video',       
+        ref: 'Course',
     }],
-    profilePic:{
+    profilePic: {
         type: String,
         trim: true,
         default: ''
-    }
+    },
+    study: {
+        type: String,
+        default: ''
+    },
+    university: {
+        type: String,
+        default: ''
+    },
+    aboutMe: {
+        type: String,
+        default: ''
+    },
+    aboutTeacher: {
+        type: String,
+        default: ''
+    },
+    requestTeacher: {
+        type: Boolean,
+        default: false
+    },
 });
 
 module.exports = mongoose.model('User', userSchema);
