@@ -21,6 +21,7 @@ const courseSchema = new mongoose.Schema({
     seasons: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Season',
+        default:[]
     }],
     like: [{
         type: mongoose.Schema.Types.ObjectId,

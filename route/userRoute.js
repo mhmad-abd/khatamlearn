@@ -14,7 +14,8 @@ router.post('/save/:courseId', auth, userController.savedCourse)
 router.get('/course/saved', auth, userController.getSavedVideo)
 router.post('/send-request', auth, upload.fields([{ name: 'profile', maxCount: 1 }, { name: 'resume', maxCount: 1 }]), userController.setRequest)
 router.put('/change-password', auth, userController.changePass)
-router.get('/all-teachers',  userController.getAllTeachers)
+router.get('/all-teachers', userController.getAllTeachers)
 router.get('/teacher/:id/courses', userController.getOneTeacherCourses)
+router.post('/is-saved', auth, userController.isSaved)
 
 module.exports = router

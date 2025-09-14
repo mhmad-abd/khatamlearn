@@ -168,7 +168,8 @@ const savedCourse = async (req, res) => {
             user.CourseId.push(courseId)
         }
         await user.save()
-        res.status(200).json({ message: isSaved ? 'Course unsaved' : 'Course saved' })
+        const saved = true
+        res.status(200).json({ message: isSaved ? 'Course unsaved' : 'Course saved', saved })
     } catch (e) {
         res.status(500).json({ message: 'Server Error', error: e.message });
 
@@ -271,7 +272,7 @@ const changePass = async (req, res) => {
 const getAllTeachers = async (req, res) => {
     try {
         const teachers = await User.aggregate([
-            { $match: { role: "teacher" } },
+            { $match: { role: "Teacher" } },
             {
                 $lookup: {
                     from: "courses",
@@ -290,7 +291,9 @@ const getAllTeachers = async (req, res) => {
                     name: 1,
                     email: 1,
                     role: 1,
-                    coursesCount: 1
+                    coursesCount: 1,
+                    study: 1,
+                    profilePic: 1
                 }
             }
         ]);
@@ -304,25 +307,39 @@ const getAllTeachers = async (req, res) => {
 const getOneTeacherCourses = async (req, res) => {
     const { id } = req.params
     try {
-        const teacher = await User.findOne({ _id: id, role: "teacher" });
+        const teacher = await User.findOne({ _id: id, role: "Teacher" }).select('-password');
         if (!teacher) {
             return res.status(404).json({ message: "Teacher not found" });
         }
         const courses = await Course.find({ publisher: teacher._id }).sort({ createdAt: -1 })
         res.status(200).json({
             courses,
-            teacher: {
-                id: teacher._id,
-                name: teacher.name,
-                email: teacher.email,
-                study: teacher.study,
-                university: teacher.university
-            }
+            teacher
         })
     } catch (e) {
         res.status(500).json({ message: "Server Error", error: e.message });
     }
 }
+
+const isSaved = async (req, res) => {
+  const { courseId } = req.body;
+  const userId = req.user.id;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'user not found' });
+    }
+
+    const saved = user.CourseId.some(
+      c => c.toString() === courseId
+    );
+
+    res.json({ saved }); // true یا false
+  } catch (e) {
+    return res.status(500).json({ message: 'server error', error: e.message });
+  }
+};
 
 
 module.exports = {
@@ -337,5 +354,6 @@ module.exports = {
     setRequest,
     changePass,
     getAllTeachers,
-    getOneTeacherCourses
+    getOneTeacherCourses,
+    isSaved
 }

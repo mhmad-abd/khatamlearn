@@ -32,7 +32,8 @@ const getCourse = async (req, res) => {
             return res.status(400).json({ error: 'Invalid course ID' });
         }
         const course = await Course.findById(courseId)
-            .populate('publisher', 'name')
+            .populate('publisher', 'name aboutTeacher')
+            .populate('seasons')
         if (!course) {
             return res.status(404).json({ message: 'Course not found' })
         }
@@ -49,6 +50,7 @@ const getAllCourses = async (req, res) => {
     try {
         const totalCourse = await Course.countDocuments()
         const courses = await Course.find()
+            .populate('publisher', 'name')
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit)
@@ -76,13 +78,13 @@ const deleteCourse = async (req, res) => {
             for (const season of seasons) {
                 const videos = await Video.find({ seasonId: season._id })
                 await Promise.all(videos.map(async (video) => {
-                try {
-                    await deleteFile(video.url); 
-                } catch (err) {
-                    console.error(`Failed to delete file: ${video.url}`, err);
-                }
-                await Video.findByIdAndDelete(video._id); 
-            }));
+                    try {
+                        await deleteFile(video.url);
+                    } catch (err) {
+                        console.error(`Failed to delete file: ${video.url}`, err);
+                    }
+                    await Video.findByIdAndDelete(video._id);
+                }));
             }
             await Season.deleteMany({ courseId: course._id })
         }

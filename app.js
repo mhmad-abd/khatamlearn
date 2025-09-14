@@ -45,7 +45,12 @@ const corsOptions = {
   credentials: true
 };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
+app.use(cors({
+  origin: true,
+  credentials: true
+}));
+
 app.use(express.urlencoded({ extended: true }));
 
 // API Routes

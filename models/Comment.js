@@ -7,9 +7,9 @@ const commentSchema = mongoose.Schema({
         required: true,
         minlength: 1
     },
-    videoID: {
+    courseId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Video',
+        ref: 'Course',
         required: true
     },
     userID: {

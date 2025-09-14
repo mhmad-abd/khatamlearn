@@ -35,6 +35,7 @@ const userSchema = new mongoose.Schema({
     CourseId: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Course',
+        default: []
     }],
     profilePic: {
         type: String,
