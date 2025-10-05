@@ -3,10 +3,12 @@ const mongoose = require('mongoose')
 const Video = require('../models/Video')
 const Season = require('../models/Season')
 const { deleteFile } = require('../utils/s3')
+const safeTrim = require('../utils/safeTrim')
+const User = require('../models/User')
 
 const addCourse = async (req, res) => {
-    const title = req.body.title.trim()
-    const description = req.body.description.trim()
+    const title = safeTrim(req.body.title)
+    const description = safeTrim(req.body.description)
     const userID = req.user.id
     try {
         if (!req.file) {
@@ -33,7 +35,11 @@ const getCourse = async (req, res) => {
         }
         const course = await Course.findById(courseId)
             .populate('publisher', 'name aboutTeacher')
-            .populate('seasons')
+            .populate({
+                path: 'seasons',
+                populate: { path: 'videos' } 
+            });
+
         if (!course) {
             return res.status(404).json({ message: 'Course not found' })
         }
@@ -95,11 +101,44 @@ const deleteCourse = async (req, res) => {
     }
 }
 
+const updateCourse = async (req, res) => {
+    const courseId = req.params.id
+    const userId = req.user.id
+    const title = safeTrim(req.body.title)
+    const description = safeTrim(req.body.description)
+    const aboutTeacher = safeTrim(req.body.aboutTeacher)
+    try {
+        if (!mongoose.Types.ObjectId.isValid(courseId)) {
+            return res.status(400).json({ message: 'Invalid course ID' });
+        }
+        const course = await Course.findById(courseId)
+        const user = await User.findById(userId)
+        if (!course) {
+            return res.status(404).json({ message: 'Course not found' });
+        }
+        if (user._id.toString() !== course.publisher.toString()) {
+            return res.status(403).json({ message: 'You are not authorized to update this course' });
+        }
+        if (!(title || description || aboutTeacher)) {
+            return res.status(400).json({ message: 'At least one field is required to update' });
+        }
+        if (title) course.title = title
+        if (description) course.description = description
+        if (aboutTeacher) user.aboutTeacher = aboutTeacher
+        course.save()
+        user.save()
+        res.status(200).json({ message: 'Course updated successfully' });
 
+    } catch (e) {
+        return res.status(500).json({ message: 'Interval server error', error: e.message })
+
+    }
+}
 
 module.exports = {
     addCourse,
     getCourse,
     getAllCourses,
-    deleteCourse
+    deleteCourse,
+    updateCourse
 }

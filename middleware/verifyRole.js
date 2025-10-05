@@ -1,6 +1,6 @@
 const verifyRole = (req,res,next)=>{
     const user = req.user
-    if(user.role == "teacher"){
+    if(user.role == "Teacher"){
         next()
     }
     else{

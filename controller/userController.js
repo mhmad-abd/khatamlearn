@@ -31,11 +31,8 @@ const logout = (req, res) => {
 
 const updateUser = async (req, res) => {
     const userID = req.user.id
-    const { name, email, study, university, aboutMe } = req.body || {}
+    const { name, email, study, university, aboutMe, aboutTeacher } = req.body || {}
     let hasUpdated = false
-    console.log("REQ BODY:", req.body);
-    console.log("REQ FILE:", req.file);
-
     try {
         const user = await User.findById(userID)
         if (!user) {
@@ -59,6 +56,10 @@ const updateUser = async (req, res) => {
         }
         if (email) {
             user.email = email
+            hasUpdated = true
+        }
+        if (user.role === 'Teacher') {
+            user.aboutTeacher = aboutTeacher
             hasUpdated = true
         }
         if (req.file) {
@@ -322,25 +323,42 @@ const getOneTeacherCourses = async (req, res) => {
 }
 
 const isSaved = async (req, res) => {
-  const { courseId } = req.body;
-  const userId = req.user.id;
+    const { courseId } = req.body;
+    const userId = req.user.id;
 
-  try {
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: 'user not found' });
+    try {
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'user not found' });
+        }
+
+        const saved = user.CourseId.some(
+            c => c.toString() === courseId
+        );
+
+        res.json({ saved }); // true یا false
+    } catch (e) {
+        return res.status(500).json({ message: 'server error', error: e.message });
     }
-
-    const saved = user.CourseId.some(
-      c => c.toString() === courseId
-    );
-
-    res.json({ saved }); // true یا false
-  } catch (e) {
-    return res.status(500).json({ message: 'server error', error: e.message });
-  }
 };
 
+const myCoursesTeacher = async (req, res) => {
+    const userId = req.user.id
+    try {
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ message: 'Ivalid video ID' })
+        }
+        const user = await User.findOne({ _id: userId, role: 'Teacher' })
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' })
+        }
+        const courses = await Course.find({ publisher: user._id })
+        res.status(200).json(courses)
+
+    } catch (e) {
+        return res.status(500).json({ message: 'server error', error: e.message });
+    }
+}
 
 module.exports = {
     getUser,
@@ -355,5 +373,6 @@ module.exports = {
     changePass,
     getAllTeachers,
     getOneTeacherCourses,
-    isSaved
+    isSaved,
+    myCoursesTeacher
 }

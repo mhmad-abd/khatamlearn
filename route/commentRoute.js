@@ -4,9 +4,9 @@ const auth = require('../middleware/authentication')
 const router = express.Router()
 
 
-router.get('/:videoid/comment',comController.getComments)
-router.post('/:videoid/comment',auth,comController.newComment)
-router.post('/:videoid/comment/:commentID',auth,comController.newReply)
+router.get('/:courseId/comment',comController.getComments)
+router.post('/:courseId/comment',auth,comController.newComment)
+router.post('/:courseId/comment/:commentID',auth,comController.newReply)
 router.get('/comment/replies/:commentID',comController.getReplies)
 
 

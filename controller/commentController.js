@@ -1,11 +1,13 @@
+const Course = require('../models/Course')
+const safeTrim = require('../utils/safeTrim')
 const Comment = require('./../models/Comment')
 const mongoose = require('mongoose')
 
 
 const getComments = async (req, res) => {
-    const videoid = req.params.videoid
+    const courseId = req.params.courseId
     try {
-        const comments = await Comment.find({ videoID: videoid, parentID: null })
+        const comments = await Comment.find({ courseId: courseId, parentID: null })
             .populate('userID', 'name')
             .sort({ createdAt: -1 })
         res.json(comments)
@@ -15,11 +17,15 @@ const getComments = async (req, res) => {
 }
 
 const newComment = async (req, res) => {
-    const videoid = req.params.videoid
+    const courseId = req.params.courseId
+    const content = safeTrim(req.body.content)
     try {
+        if(!content){
+            return res.status(400).json({message:'Content is required'})
+        }
         const newCom = new Comment({
-            content: req.body.content,
-            videoID: videoid,
+            content: content,
+            courseId: courseId,
             userID: req.user.id
         })
         await newCom.save()
@@ -30,15 +36,19 @@ const newComment = async (req, res) => {
 }
 
 const newReply = async (req, res) => {
-    const videoID = req.params.videoid
+    const courseId = req.params.courseId
     const parentID = req.params.commentID
     try {
-        if (!mongoose.Types.ObjectId.isValid(videoID) || !mongoose.Types.ObjectId.isValid(parentID)) {
+        if (!mongoose.Types.ObjectId.isValid(courseId) || !mongoose.Types.ObjectId.isValid(parentID)) {
             return res.status(400).json({ message: 'invalid arguments' })
+        }
+        const course = await Course.findById(courseId)
+        if(!course){
+            return res.status(404).json({message:'Course not found'})
         }
         const newCom = new Comment({
             content: req.body.content,
-            videoID,
+            courseId,
             userID: req.user.id,
             parentID
         })

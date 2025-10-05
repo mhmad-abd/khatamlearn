@@ -3,6 +3,7 @@ const auth = require("../middleware/authentication")
 const router = express.Router()
 const userController = require("../controller/userController")
 const upload = require('../middleware/upload')
+const verifyRole = require('../middleware/verifyRole')
 
 router.get("/me", auth, userController.getUser)
 router.post("/logout", auth, userController.logout)
@@ -17,5 +18,6 @@ router.put('/change-password', auth, userController.changePass)
 router.get('/all-teachers', userController.getAllTeachers)
 router.get('/teacher/:id/courses', userController.getOneTeacherCourses)
 router.post('/is-saved', auth, userController.isSaved)
+router.get('/teacher/my-courses', auth, verifyRole, userController.myCoursesTeacher)
 
 module.exports = router

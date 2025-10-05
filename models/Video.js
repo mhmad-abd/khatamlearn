@@ -7,12 +7,6 @@ const videoSchema = new mongoose.Schema({
         trim: true,
         minlength: 1
     },
-    description: {
-        type: String,
-        required: true,
-        trim: true,
-        minlength: 1
-    },
     url: {
         type: String,
         required: true,
@@ -23,15 +17,10 @@ const videoSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    majorField: {
-        // type: mongoose.Schema.Types.ObjectId,
-        // ref: 'Major',
-        type: String,
-        required: true
-    },
     likes: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        default:[]
     }],
     PDFUrl: {
         type: String,
@@ -39,7 +28,8 @@ const videoSchema = new mongoose.Schema({
     },
     view: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        default:[]
     }],
     seasonId: {
         type: mongoose.Schema.Types.ObjectId,

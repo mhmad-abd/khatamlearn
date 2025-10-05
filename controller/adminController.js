@@ -68,7 +68,7 @@ const getRequest = async (req, res) => {
 const approveRequest = async (req, res) => {
     const { id } = req.params;
     try {
-        const request = await Request.findByIdAndUpdate(id, { status: 'reviewed' }, { new: true });
+        const request = await Request.findByIdAndUpdate(id, { status: 'Accepted' }, { new: true });
         if (!request) {
             return res.status(404).json({ message: 'Request not found' });
         }
@@ -85,7 +85,7 @@ const approveRequest = async (req, res) => {
 const declineRequest = async (req, res) => {
     const { id } = req.params;
     try {
-        const request = await Request.findByIdAndUpdate(id, { status: 'rejected' }, { new: true });
+        const request = await Request.findByIdAndUpdate(id, { status: 'Rejected' }, { new: true });
         if (!request) {
             return res.status(404).json({ message: 'Request not found' });
         }
@@ -104,7 +104,7 @@ const declineRequest = async (req, res) => {
 const demoteTeacher = async (req, res) => {
     const { id } = req.params;
     try {
-        const user = await User.findByIdAndUpdate(id, { role: 'user' }, { new: true });
+        const user = await User.findByIdAndUpdate(id, { role: 'User' }, { new: true });
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }

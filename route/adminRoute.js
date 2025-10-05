@@ -10,8 +10,8 @@ router.put('/major/:id',adminController.updateMajor)
 router.delete('/major/:id',adminController.deleteMajor)
 
 //request teacher 
-router.post('/request-teacher', adminController.getRequest)
+router.get('/request-teacher', adminController.getRequest)
 router.post('/approve-request/:id', adminController.approveRequest)
-router.get('/decline-request/:id', adminController.declineRequest)
+router.post('/decline-request/:id', adminController.declineRequest)
 router.post('/demote-teacher/:id', adminController.demoteTeacher)
 module.exports = router

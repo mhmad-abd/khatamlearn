@@ -55,7 +55,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // API Routes
 app.use('/api', serachRoute);
-app.use('/api/video/comments', commentRoute);
+app.use('/api/course/comments', commentRoute);
 app.use('/api/user', userRoute);
 app.use('/api/video', videoRoute);
 app.use('/api/report', reportRoute);

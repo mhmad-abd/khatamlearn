@@ -1,6 +1,6 @@
 const verifyAdmin = (req,res,next)=>{
     const user = req.user
-    if(user.role == "admin"){
+    if(user.role == "Admin"){
         next()
     }
     else{
