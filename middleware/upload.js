@@ -25,7 +25,8 @@ const storage = multerS3({
       default:
         folder = 'others/';
     }
-    cb(null, folder + Date.now() + '-' + file.originalname);
+    const cleanFileName = file.originalname.trim().replace(/\s+/g, '_').replace(/[^\w.-]/g, '')
+    cb(null, folder + Date.now() + '-' + cleanFileName);
   },
 });
 
